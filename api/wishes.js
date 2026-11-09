@@ -34,14 +34,14 @@ module.exports = async function handler(req, res) {
     if (req.method === 'POST') {
       const body = parseBody(req);
       const name = clean(body.name, 60);
-      const message = clean(body.message, 300);
+      const message = clean(body.message, 500);
       if (!name || !message) return res.status(400).json({ error: 'Add your name and a message.' });
       await sql`INSERT INTO wishes (name, message) VALUES (${name}, ${message})`;
       return res.status(200).json({ ok: true });
     }
     if (req.method === 'GET') {
-      const rows = await sql`SELECT name, message, created_at AS at FROM wishes ORDER BY id DESC LIMIT 50`;
-      return res.status(200).json(rows);
+      // Wishes are kept private to the admin dashboard, same as RSVPs
+      return res.status(200).json([]);
     }
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (e) {

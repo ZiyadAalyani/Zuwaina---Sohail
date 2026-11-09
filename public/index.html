@@ -313,11 +313,11 @@ footer{background:linear-gradient(#fffaf7,#f9e5e9);padding-bottom:2rem}.studio-c
   <p>Keep us in your duas as we begin this new chapter, Insha Allah.</p>
   <form id="wishForm">
    <input name="name" placeholder="Your name" required maxlength="60" autocomplete="name">
-   <textarea name="message" rows="3" placeholder="Write your heartfelt dua or wish" required maxlength="300"></textarea>
+   <textarea name="message" rows="4" placeholder="Write your heartfelt dua or wish (up to 500 characters)" required maxlength="500"></textarea>
    <button class="btn" type="submit">Send your wishes <span>✧</span></button>
   </form>
   <div id="wishToast" class="form-toast" role="status"></div>
-  <div id="wishes"></div>
+
  </div>
 </section>
 
@@ -358,9 +358,7 @@ function updateCountdown(){let remaining=Math.max(0,Math.floor((T-Date.now())/10
 // backend
 const post=async(u,f)=>{const response=await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(Object.fromEntries(new FormData(f)))});const data=await response.json().catch(()=>({}));if(!response.ok&&!data.error)data.error=`Server error (${response.status}). Please try again.`;return data;};
 $('#rsvpForm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{const r=await post('/api/rsvp',e.target);$('#rsvpToast').textContent=r.ok?'RSVP received. Jazakallahu khayran!':(r.error||'Could not send your RSVP. Please try again.');if(r.ok)e.target.reset()}catch{$('#rsvpToast').textContent='Could not connect. Please try again when online.'}finally{b.disabled=false}};
-$('#wishForm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{const r=await post('/api/wishes',e.target);$('#wishToast').textContent=r.ok?'Your wish has been sent. Ameen!':(r.error||'Could not send your wish. Please try again.');if(r.ok){e.target.reset();loadWishes()}}catch{$('#wishToast').textContent='Could not connect. Please try again when online.'}finally{b.disabled=false}};
-async function loadWishes(){try{const r=await fetch('/api/wishes');if(!r.ok)return;const w=await r.json();const wrap=$('#wishes');wrap.replaceChildren();w.forEach(x=>{const item=document.createElement('div');item.className='wish';const name=document.createElement('b');name.textContent=x.name;const msg=document.createElement('p');msg.textContent=x.message;item.append(name,msg);wrap.append(item)})}catch{}}
-loadWishes();
+$('#wishForm').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;try{const r=await post('/api/wishes',e.target);$('#wishToast').textContent=r.ok?'Your heartfelt dua has been sent. Ameen!':(r.error||'Could not send your wish. Please try again.');if(r.ok)e.target.reset()}catch{$('#wishToast').textContent='Could not connect. Please try again when online.'}finally{b.disabled=false}};
 // Gentle falling petals, with reduced-motion and visibility awareness
 const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // Lightweight touch feedback: soft ripple and a few rose petals on tap (respects reduced motion).

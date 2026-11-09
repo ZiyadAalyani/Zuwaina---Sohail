@@ -24,7 +24,7 @@ const save = d => {
   }
 };
 
-const clean = (s, n = 300) => String(s || '').replace(/[<>]/g, '').trim().slice(0, n);
+const clean = (s, n = 500) => String(s || '').replace(/[<>]/g, '').trim().slice(0, n);
 
 const mime = {
   '.html': 'text/html',
@@ -105,13 +105,13 @@ http.createServer(async (q, r) => {
     if (q.method === 'POST') {
       const b = await body(q);
       const name = clean(b.name, 60);
-      const msg = clean(b.message);
+      const msg = clean(b.message, 500);
       if (!name || !msg) return send(r, 400, { error: 'Add your name and a message.' });
       d.wishes.unshift({ id: Date.now(), name, message: msg, at: new Date().toISOString() });
       save(d);
       return send(r, 200, { ok: true });
     }
-    return send(r, 200, d.wishes.slice(0, 50));
+    return send(r, 200, []);
   }
 
   if (u.pathname === '/api/admin' && q.method === 'POST') {

@@ -37,7 +37,7 @@ async function ensureTables(sql) {
   tablesEnsured = true;
 }
 
-function clean(value, max = 300) {
+function clean(value, max = 500) {
   return String(value || '').replace(/[<>]/g, '').trim().slice(0, max);
 }
 
